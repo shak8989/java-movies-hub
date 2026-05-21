@@ -1,11 +1,9 @@
 
 package ru.practicum.moviehub.http;
 import ru.practicum.moviehub.store.MoviesStore;
-import org.junit.jupiter.api.Test;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.net.http.HttpClient;
