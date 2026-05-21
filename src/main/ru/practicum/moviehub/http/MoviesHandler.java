@@ -1,25 +1,37 @@
 package ru.practicum.moviehub.http;
 
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
-public class MoviesHandler extends BaseHttpHandler {
+class MoviesHandler implements HttpHandler {
 
     @Override
-    public void handle(HttpExchange ex)
-            throws IOException {
+    public void handle(HttpExchange ex) throws IOException {
 
-        String method =
-                ex.getRequestMethod();
+        String method = ex.getRequestMethod();
 
         if (method.equalsIgnoreCase("GET")) {
 
-            sendJson(ex, 200, "[]");
+            byte[] bytes =
+                    "[]".getBytes(StandardCharsets.UTF_8);
 
-        } else {
+            ex.getResponseHeaders().set(
+                    "Content-Type",
+                    "application/json; charset=UTF-8"
+            );
 
-            sendNoContent(ex);
+            ex.sendResponseHeaders(200, bytes.length);
+
+            OutputStream os =
+                    ex.getResponseBody();
+
+            os.write(bytes);
+
+            os.close();
         }
     }
 }
