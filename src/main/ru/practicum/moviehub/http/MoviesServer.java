@@ -1,49 +1,34 @@
-package ru.practicum.moviehub.http;
 
-import com.sun.net.httpserver.HttpServer;
+package ru.practicum.moviehub.http;
 import ru.practicum.moviehub.store.MoviesStore;
+import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class MoviesServer {
 
-    private final HttpServer server;
+    private HttpServer server;
+    private final MoviesStore store = new MoviesStore();
 
-    public MoviesServer(MoviesStore store, int port) {
-
+    public void start() {
         try {
-
-            server = HttpServer.create(
-                    new InetSocketAddress(port),
-                    0
-            );
-
-            server.createContext(
-                    "/movies",
-                    new MoviesHandler()
-            );
-
+            server = HttpServer.create(new InetSocketAddress("localhost", 8080), 0);
+            server.createContext("/movies", new MoviesHandler(store));
+            server.start();
         } catch (IOException e) {
-
-            throw new RuntimeException(
-                    "Не удалось создать HTTP-сервер",
-                    e
-            );
+            throw new RuntimeException("Не удалось запустить сервер", e);
         }
     }
 
-    public void start() {
-
-        server.start();
-
-        System.out.println("Сервер запущен");
+    public void stop() {
+        if (server != null) {
+            server.stop(0);
+        }
     }
 
-    public void stop() {
+    public MoviesStore getStore() {
 
-        server.stop(0);
-
-        System.out.println("Сервер остановлен");
+        return store;
     }
 }

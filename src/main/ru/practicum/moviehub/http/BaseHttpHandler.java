@@ -1,5 +1,5 @@
-package ru.practicum.moviehub.http;
 
+package ru.practicum.moviehub.http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -9,41 +9,22 @@ import java.nio.charset.StandardCharsets;
 
 abstract class BaseHttpHandler implements HttpHandler {
 
-    protected static final String CT_JSON =
-            "application/json; charset=UTF-8";
+    protected static final String CT_JSON = "application/json; charset=UTF-8";
 
-    protected void sendJson(
-            HttpExchange ex,
-            int status,
-            String json) throws IOException {
+    protected void sendJson(HttpExchange ex, int status, String json) throws IOException {
+        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
-        byte[] bytes =
-                json.getBytes(StandardCharsets.UTF_8);
-
-        ex.getResponseHeaders().set(
-                "Content-Type",
-                CT_JSON
-        );
-
-        ex.sendResponseHeaders(
-                status,
-                bytes.length
-        );
+        ex.getResponseHeaders().set("Content-Type", CT_JSON);
+        ex.sendResponseHeaders(status, bytes.length);
 
         try (OutputStream os = ex.getResponseBody()) {
             os.write(bytes);
         }
     }
 
-    protected void sendNoContent(HttpExchange ex)
-            throws IOException {
-
-        ex.getResponseHeaders().set(
-                "Content-Type",
-                CT_JSON
-        );
-
+    protected void sendNoContent(HttpExchange ex) throws IOException {
+        ex.getResponseHeaders().set("Content-Type", CT_JSON);
         ex.sendResponseHeaders(204, -1);
+        ex.close();
     }
 }
-
